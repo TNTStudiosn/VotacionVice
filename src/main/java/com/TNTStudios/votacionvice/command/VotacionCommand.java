@@ -1,5 +1,7 @@
 package com.TNTStudios.votacionvice.command;
 
+import com.TNTStudios.votacionvice.network.NetworkHandler;
+import com.TNTStudios.votacionvice.util.LuckPermsUtil;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.command.CommandSource;
@@ -9,7 +11,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import me.lucko.luckperms.LuckPermsUtil;
+
 
 import java.util.List;
 
