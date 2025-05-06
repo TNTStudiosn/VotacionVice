@@ -29,14 +29,13 @@ public class VotacionCommand {
                                     MinecraftServer server = world.getServer();
 
                                     for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                                        if (player.hasPermissionLevel(0) && player.getPermissionLevel() >= 0 &&
-                                                player.hasPermissionLevel(0) && player.server.getPermissionLevel(player.getGameProfile()) >= 0 &&
-                                                LuckPermsUtil.hasPermission(player, "votacion.juez")) {
+                                        if (LuckPermsUtil.hasPermission(player, "votacion.juez")) {
                                             NetworkHandler.sendOpenGuiPacket(player, equipo);
                                         }
                                     }
 
-                                    source.sendFeedback(Text.literal("Votación iniciada para equipo " + equipo), false);
+
+                                    source.sendFeedback(() -> Text.literal("Votación iniciada para equipo " + equipo), false);
                                     return 1;
                                 }))));
     }

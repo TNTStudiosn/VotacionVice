@@ -26,7 +26,14 @@ public class PantallaVotacion extends Screen {
 
         for (int i = 0; i < categorias.size(); i++) {
             String categoria = categorias.get(i);
-            addDrawableChild(new TextWidget(this.width / 2 - 100, startY + (i * 40), Text.literal(categoria)));
+            addDrawableChild(new TextWidget(
+                    this.width / 2 - 100,
+                    startY + (i * 40),
+                    100, 12,
+                    Text.literal(categoria),
+                    this.textRenderer
+            ));
+
 
             for (int j = 1; j <= 10; j++) {
                 int x = this.width / 2 - 100 + (j * (buttonWidth + 2));
@@ -41,7 +48,7 @@ public class PantallaVotacion extends Screen {
         // Botón Enviar
         addDrawableChild(ButtonWidget.builder(Text.literal("Enviar"), btn -> {
             if (respuestas.size() == 4) {
-                NetworkHandler.sendVotacion(this.equipo, respuestas);
+                VotacionPacket.send(this.equipo, respuestas);
                 this.close();
             } else {
                 this.client.player.sendMessage(Text.literal("Debes votar en todas las categorías."));
