@@ -97,7 +97,7 @@ public class PantallaVotacion extends Screen {
             if (respuestas.size() == 4) {
                 VotacionPacket.send(this.equipo, respuestas);
                 this.client.player.sendMessage(Text.literal("¡Gracias por votar!").formatted(Formatting.GREEN));
-                this.close();
+                this.cerrarPantallaManual();
             } else {
                 this.client.player.sendMessage(Text.literal("Debes votar en todas las categorías.").formatted(Formatting.RED));
             }
@@ -123,4 +123,21 @@ public class PantallaVotacion extends Screen {
         this.renderBackground(context);
         super.render(context, mouseX, mouseY, delta);
     }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return false; // evita que ESC cierre la GUI
+    }
+
+    @Override
+    public void close() {
+        // ignorar cierres no autorizados (por tecla o acción externa)
+        // solo permitimos cerrar desde el botón "Enviar"
+    }
+
+    public void cerrarPantallaManual() {
+        // llamado interno desde el botón Enviar
+        super.close(); // permite cerrar solo cuando es legítimo
+    }
+
 }
