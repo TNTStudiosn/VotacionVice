@@ -2,13 +2,11 @@ package com.TNTStudios.votacionvice.network;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,6 +26,12 @@ public class VotacionServerPacketHandler {
             Path path = FabricLoader.getInstance().getConfigDir()
                     .resolve("Votaciones/equipo" + equipo + "/" + player.getName().getString() + ".json");
 
+            // Si ya votó, ignorar
+            if (Files.exists(path)) {
+                System.out.println("[VotacionVice] El jugador " + player.getName().getString() + " ya votó por el equipo " + equipo + ". Voto descartado.");
+                return;
+            }
+
             JsonObject json = new JsonObject();
             votos.forEach(json::addProperty);
             json.addProperty("media", media);
@@ -35,6 +39,7 @@ public class VotacionServerPacketHandler {
             try {
                 Files.createDirectories(path.getParent());
                 Files.writeString(path, new GsonBuilder().setPrettyPrinting().create().toJson(json));
+                System.out.println("[VotacionVice] Voto registrado para " + player.getName().getString() + " en equipo " + equipo);
             } catch (IOException e) {
                 System.err.println("Error al guardar votación del jugador " + player.getName().getString() + ": " + e.getMessage());
             }
