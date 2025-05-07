@@ -5,8 +5,13 @@ import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import toni.immersivemessages.api.ImmersiveMessage;
+import toni.immersivemessages.api.SoundEffect;
+import toni.immersivemessages.api.TextAnchor;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,6 +48,47 @@ public class VotacionServerPacketHandler {
             } catch (IOException e) {
                 System.err.println("Error al guardar votación del jugador " + player.getName().getString() + ": " + e.getMessage());
             }
+
+            // 🔔 Enviar notificación a todos los jugadores
+            server.execute(() -> {
+                MinecraftServer mcServer = player.getServer();
+                if (mcServer != null) {
+                    String titulo   = "§l§b¡Voto Registrado!";
+                    String subtitulo = "§7El juez §a" + player.getName().getString() + " §7envió su voto";
+
+                    for (ServerPlayerEntity onlinePlayer : mcServer.getPlayerManager().getPlayerList()) {
+                        double randomYOffset = Math.random() * 60 - 30;
+
+                        ImmersiveMessage.builder(6.0f, titulo)               // 6s para que dé tiempo a todo
+                                .anchor(TextAnchor.TOP_CENTER)
+                                .wrap(200)
+                                .y(50f + (float)randomYOffset)
+                                .size(1.2f)
+                                .background()
+                                .slideDown(0.5f)
+                                .slideOutUp(0.5f)
+                                .fadeIn(0.5f)
+                                .fadeOut(0.5f)
+                                .sound(SoundEffect.LOW)
+                                .typewriter(2.0f, true)
+                                .subtext(0.5f, subtitulo, 15f, (subtext) -> subtext
+                                        .anchor(TextAnchor.TOP_CENTER)
+                                        .wrap(200)
+                                        .size(1.0f)
+                                        .fadeIn(0.5f)
+                                        .fadeOut(0.5f)
+                                        .typewriter(1.5f, true)
+                                )
+                                .sendServer(onlinePlayer);
+
+                        // Reproducir sonido adicional para llamar la atención
+                        onlinePlayer.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+                    }
+                }
+            });
+
+
+
         });
     }
 }
