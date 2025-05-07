@@ -59,7 +59,7 @@ public class VotacionServerPacketHandler {
                     for (ServerPlayerEntity onlinePlayer : mcServer.getPlayerManager().getPlayerList()) {
                         double randomYOffset = Math.random() * 60 - 30;
 
-                        ImmersiveMessage.builder(6.0f, titulo)               // 6s para que dé tiempo a todo
+                        ImmersiveMessage.builder(4.0f, titulo)
                                 .anchor(TextAnchor.TOP_CENTER)
                                 .wrap(200)
                                 .y(50f + (float)randomYOffset)
@@ -75,6 +75,8 @@ public class VotacionServerPacketHandler {
                                         .anchor(TextAnchor.TOP_CENTER)
                                         .wrap(200)
                                         .size(1.0f)
+                                        .slideDown(0.5f)        // Añadido para coordinar entrada
+                                        .slideOutUp(0.5f)       // Añadido para coordinar salida
                                         .fadeIn(0.5f)
                                         .fadeOut(0.5f)
                                         .typewriter(1.5f, true)
