@@ -40,14 +40,23 @@ public class VotacionCommand {
                                     ServerWorld world = source.getWorld();
                                     MinecraftServer server = world.getServer();
 
-                                    for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                                        if (LuckPermsUtil.hasPermission(player, "votacion.juez")) {
-                                            NetworkHandler.sendOpenGuiPacket(player, equipo);
-                                        }
-                                    }
+                                            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                                                if (!LuckPermsUtil.hasPermission(player, "votacion.juez")) continue;
+
+                                                String nombreJuez = player.getName().getString();
+                                                Path votoPath = FabricLoader.getInstance().getConfigDir()
+                                                        .resolve("Votaciones/equipo" + equipo + "/" + nombreJuez + ".json");
+
+                                                if (Files.exists(votoPath)) {
+                                                    continue;
+                                                }
+
+                                                NetworkHandler.sendOpenGuiPacket(player, equipo);
+                                            }
 
 
-                                    source.sendFeedback(() -> Text.literal("Votación iniciada para equipo " + equipo), false);
+
+                                            source.sendFeedback(() -> Text.literal("Votación iniciada para equipo " + equipo), false);
                                     return 1;
                                 }
                                 )
